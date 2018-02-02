@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <title>perf.html: a profiler for Firefox</title>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href='style.css' />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle, cover
+
+# Your title
+## Your subtitle
+
+---
+
+# Your first slide
+
+It can contain normal text
+
+* Or bullet
+* points
+
+1. Or even a
+2. numbered list
+
+---
+
+# What's the plan?
+
+1. Introduction
+2. This is good
+3. But this is bad too
+4. Let's wrap up then
+
+---
+
+# Some code in JavaScript
+
+```javascript
+var doWork = (arg) => {
+  if (arg === null) {
+    console.log(`
+      arg was null!
+      Do something about it!
+    `);
+  }
+}
+```
+
+If you don't like the ligatures, you can use _Fira Mono_ instead of `Fira Code`.
+
+---
+
+# Some code in _C++_ too
+
+```cpp
+ProfileBufferEntry::ProfileBufferEntry()
+  : mKind(Kind::INVALID)
+{
+  u.mString = nullptr;
+}
+
+```
+
+---
+
+# And in _Rust_?
+
+.smaller[
+```rust
+/// Spin up a devtools server that listens for connections
+/// on the specified port.
+pub fn start_server(port: u16) -> Sender<DevtoolsControlMsg> {
+    let (sender, receiver) = channel();
+    {
+        let sender = sender.clone();
+        thread::Builder::new().name("Devtools".to_owned()).spawn(move || {
+            run_server(sender, receiver, port)
+        }).expect("Thread spawning failed");
+    }
+    sender
+}
+```
+]
+
+---
+# Thank you !
+
+_INSERT FUNNY ANIMATED GIF HERE_
+
+    </textarea>
+    <script src="./lib/remark.js">
+    </script>
+    <script>
+var slideshow = remark.create({ highlightLines: true });
+    </script>
+  </body>
+</html>
