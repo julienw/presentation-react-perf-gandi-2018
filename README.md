@@ -30,10 +30,13 @@ Some things are already styled for your pleasure:
 
 * `li` have a margin
 * `h1` are smaller and bold
-* `img` can't be bigger than the width, and highe than 45% of the page
+* `img` can't be bigger than the width, and higher than 460px (remember the page
+  is then scaled according to the available space, so `460px` is relative to
+  this). If you want to add a caption, use the class `with-caption` to set the
+  height to 390px.
 * `em` (generated with `_` in markdown) are orange. `strong` are _not_ styled
   yet (PR welcome!)
-* `a` have a paler blue for accessibility
+* `a` have a paler blue for accessibility and some :hover style.
 * The text is bigger than what remark does by default.
 
 ## Pre-defined classes
@@ -46,14 +49,17 @@ I defined some classes for my taste. You can find:
   slide with more content than the others.
 * `smallest`: if you need something even smaller. Note you can also combine
   them.
-* `float-left` and `float-right`: this is obvious
+* `flex`: sets a `display: flex` on a container. This is useful if you want to
+  have some text besides an image.
+* `with-caption`: sets slightly smaller `max-height` for images that have a
+  caption below.
 
 ## Pre-defined colors
 
 ```
 :root {
   --light-blue: rgb(0, 150, 221);
-  --lighter-blue: rgb(0, 170, 245);
+  --lighter-blue: rgb(150, 210, 255);
   --navy-blue: rgb(0, 33, 71);
   --light-orange: rgb(255, 149, 0);
   --orange: rgb(230, 96, 0);
