@@ -1,45 +1,3 @@
-@font-face {
-  font-family: 'Fira Sans';
-  src: url(fonts/FiraSans-Regular.woff2);
-  font-style: normal;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'Fira Sans';
-  src: url(fonts/FiraSans-Bold.woff2);
-  font-style: normal;
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'Fira Mono';
-  src: url(fonts/FiraMono-Regular.woff2);
-  font-style: normal;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'Fira Mono';
-  src: url(fonts/FiraMono-Bold.woff2);
-  font-style: normal;
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'Fira Code';
-  src: url(fonts/FiraCode-Regular.woff2);
-  font-style: normal;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'Fira Code';
-  src: url(fonts/FiraCode-Bold.woff2);
-  font-style: normal;
-  font-weight: 700;
-}
-
 :root {
   --light-blue: rgb(0, 150, 221);
   --lighter-blue: rgb(150, 210, 255);
@@ -54,13 +12,15 @@
 }
 
 body {
-  font-family: 'Fira Sans', sans-serif;
+  /* font-family: 'Fira Sans', sans-serif; */
+  font-family: 'Zilla Slab', sans-serif;
   font-size: 1.5em;
 }
 .remark-code, .remark-inline-code { font-family: 'Fira Code', monospace; }
 .remark-code {
   font-size: .7em;
 }
+
 .remark-inline-code {
   background-color: white;
   color: var(--grey-coal);
