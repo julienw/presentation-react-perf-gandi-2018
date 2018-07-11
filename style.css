@@ -1,14 +1,8 @@
 :root {
-  --light-blue: rgb(0, 150, 221);
-  --lighter-blue: rgb(150, 210, 255);
-  --navy-blue: rgb(0, 33, 71);
-  --light-orange: rgb(255, 149, 0);
-  --orange: rgb(230, 96, 0);
-  --red: rgb(193, 56, 50);
-  --yellow: rgb(255, 203, 0);
-  --gecko-green: rgb(111, 190, 74);
+  --orange: rgb(240, 93, 52);
+  --yellow: rgb(255, 233, 0);
   --grey-coal: rgb(77, 78, 83);
-  --light-grey: rgb(208, 211, 212);
+  --blue-green: rgb(34, 156, 178);
 }
 
 body {
@@ -22,8 +16,8 @@ body {
 }
 
 .remark-inline-code {
-  background-color: white;
-  color: var(--grey-coal);
+  background-color: var(--grey-coal);
+  color: white;
   border-radius: 3px;
   padding: 0 2px;
   font-size: .9em;
@@ -34,16 +28,21 @@ body {
 h1 {
   font-weight: bold;
   font-size: 1.6em;
+  margin: 0;
 }
-h2, h3, h4, h5, h6 { font-weight: normal; }
+h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: normal;
+  font-style: italic;
+}
 
 .remark-slide-content {
   background-image: url(images/logo-mozilla.svg);
   background-repeat: no-repeat;
-  background-position: top 10px right 10px;
+  background-position: bottom 10px left 10px;
   background-size: 105px 30px;
-  background-color: var(--grey-coal);
-  color: white;
+  background-color: white;
+  color: black;
   padding: 1em 2em;
 }
 
@@ -55,12 +54,37 @@ h2, h3, h4, h5, h6 { font-weight: normal; }
 
 li {
   margin: .5em 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+  text-indent: -1.25em; /* empirically found */
+}
+
+li:before {
+  margin: 0 .3em;
+  color: var(--orange);
+}
+
+ul > li:before {
+  content: '•';
+  font-size: 1.3em;
+}
+
+ol {
+  counter-reset: ol;
+}
+
+ol > li:before {
+  counter-increment: ol;
+  content: counter(ol) '.';
 }
 
 em {
   font-style: unset;
   font-weight: bold;
-  color: var(--light-orange);
+  color: var(--orange);
 }
 
 img {
@@ -74,7 +98,7 @@ img {
 
 a {
   padding: 2px 5px;
-  color: var(--lighter-blue);
+  color: var(--blue-green);
   text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
 }
 

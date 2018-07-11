@@ -3,22 +3,21 @@
 Remark is awesome. I use it all the time for my talks. So I needed a Mozilla
 theme with the latest changes.
 
-This theme follows the Mozilla code style as of February 2018. Some colors were
-slightly modified for accessibility concerns, as the contrast wasn't good
-enough.
+This theme follows the Mozilla code style as of June 2018.
 
 All colors are defined as CSS variables for your convenience.
 
 ## Fonts
-The fonts [Fira Sans](https://github.com/carrois/Fira/),
-[Fira Mono](https://github.com/carrois/Fira/) and [Fira Code](https://github.com/tonsky/FiraCode)
-are preconfigured, both _regular_ and _bold_ weights. `Fira Code` is used for
-code fences but it's easy to switch if you'd rather use `Fira Mono`.
+The fonts [Zilla Slab](https://github.com/mozilla/zilla-slab) (including the
+"Highlight" version being used for the Mozilla logo) are preconfigured in all
+their variants.
+The fonts [Fira Mono](https://github.com/carrois/Fira/) and [Fira Code](https://github.com/tonsky/FiraCode)
+are also configured for code fences. By default `Fira Code` is used but it's
+easy to switch to `Fira Mono` if you prefer it.
 
-If you want more variants for the fonts, please help yourself and shoot a PR to me!
-
-The fonts are configured with woff2 only. I thought that because I also
-specified a fallback, this is fine if some older browser doesn't use it.
+The font [Fira Sans](https://github.com/carrois/Fira/) is also preconfigured for
+some variangs but not used by default. It's easy to switch by changing
+style.css.  
 
 Last thing about fonts is I used the latin subset for Fira. This means some
 glyphs will be missing, but I don't know more. Feel free to replace them with
@@ -36,7 +35,7 @@ Some things are already styled for your pleasure:
   height to 390px.
 * `em` (generated with `_` in markdown) are orange. `strong` are _not_ styled
   yet (PR welcome!)
-* `a` have a paler blue for accessibility and some :hover style.
+* `a` have some :hover style.
 * The text is bigger than what remark does by default.
 
 ## Pre-defined classes
@@ -58,15 +57,9 @@ I defined some classes for my taste. You can find:
 
 ```
 :root {
-  --light-blue: rgb(0, 150, 221);
-  --lighter-blue: rgb(150, 210, 255);
-  --navy-blue: rgb(0, 33, 71);
-  --light-orange: rgb(255, 149, 0);
-  --orange: rgb(230, 96, 0);
-  --red: rgb(193, 56, 50);
-  --yellow: rgb(255, 203, 0);
-  --gecko-green: rgb(111, 190, 74);
+  --orange: rgb(240, 93, 52);
+  --yellow: rgb(255, 233, 0);
   --grey-coal: rgb(77, 78, 83);
-  --light-grey: rgb(208, 211, 212);
+  --blue-green: rgb(34, 156, 178);
 }
 ```
