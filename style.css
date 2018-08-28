@@ -35,6 +35,9 @@ h2, h3, h4, h5, h6 {
   font-weight: normal;
   font-style: italic;
 }
+h2 {
+  margin: 0 0 .5em 0;
+}
 
 .remark-slide-content {
   background-image: url(images/logo-mozilla.svg);
@@ -47,7 +50,7 @@ h2, h3, h4, h5, h6 {
 }
 
 .cover {
-  font-size: 1.2em;
+  font-size: 1em;
   background-position: 20px 20px;
   background-size: 210px 60px;
 }
