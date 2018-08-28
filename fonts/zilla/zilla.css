@@ -33,11 +33,11 @@
 
 @font-face{
     font-family: 'Zilla Slab';
-    src: url('woff/ZillaSlab-RegularItalic.woff');
-    src: url('woff2/ZillaSlab-RegularItalic.woff2') format('woff2'),
-         url('woff/ZillaSlab-RegularItalic.woff') format('woff'),
-         url('otf/ZillaSlab(-RegularItalic).otf') format('opentype'),
-         url('ttf/ZillaSlab-RegularItalic.ttf') format('truetype');
+    src: url('woff/ZillaSlab-Italic.woff');
+    src: url('woff2/ZillaSlab-Italic.woff2') format('woff2'),
+         url('woff/ZillaSlab-Italic.woff') format('woff'),
+         url('otf/ZillaSlab(-Italic).otf') format('opentype'),
+         url('ttf/ZillaSlab-Italic.ttf') format('truetype');
     font-weight: 400;
     font-style: italic;
 }
