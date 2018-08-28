@@ -40,10 +40,10 @@ h2 {
 }
 
 .remark-slide-content {
-  background-image: url(images/logo-mozilla.svg);
+  background-image: url(images/logo-mozilla.svg), url(images/logo-gandi.png);
   background-repeat: no-repeat;
-  background-position: bottom 10px left 10px;
-  background-size: 105px 30px;
+  background-position: bottom 10px left 10px, bottom 10px left 140px;
+  background-size: 105px 30px, 115px 30px;
   background-color: white;
   color: black;
   padding: 1em 2em;
