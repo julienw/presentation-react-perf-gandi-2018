@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Your title</title>
+    <title>React et la performance Web - Meetup Gandi du 4 septembre 2018 - Timothée Pillard et Julien Wajsberg</title>
     <meta charset="utf-8">
     <link rel='stylesheet' href='fonts/zilla/zilla.css' />
     <link rel='stylesheet' href='fonts/fira/fira.css' />
@@ -12,87 +12,66 @@
 
 class: center, middle, cover
 
-# Your title
-## Your subtitle
+# React et la performance Web
+## Quelques astuces pour éviter les problèmes
 
 ---
 
-# Your first slide
+# Timothée
 
-It can contain normal text
+.flex[
+![Timothée](images/timothee.jpg)
 
-* Or bullet
-* points
-
-1. Or even a
-2. numbered list
-
----
-
-# What's the plan?
-
-1. Introduction
-2. This is good
-3. But this is bad too
-4. Let's wrap up then
-
----
-
-# Some code in JavaScript
-
-```javascript
-var doWork = (arg) => {
-  if (arg === null) {
-    console.log(`
-      arg was null!
-      Do something about it!
-    `);
-  }
-}
-```
-
-If you don't like the ligatures, you can use _Fira Mono_ instead of `Fira Code`.
-
----
-
-# Some code in _C++_ too
-
-```cpp
-ProfileBufferEntry::ProfileBufferEntry()
-  : mKind(Kind::INVALID)
-{
-  u.mString = nullptr;
-}
-
-```
-
----
-
-# And in _Rust_?
-
-.smaller[
-```rust
-/// Spin up a devtools server that listens for connections
-/// on the specified port.
-pub fn start_server(port: u16) -> Sender<DevtoolsControlMsg> {
-    let (sender, receiver) = channel();
-    {
-        let sender = sender.clone();
-        thread::Builder::new().name("Devtools".to_owned()).spawn(move || {
-            run_server(sender, receiver, port)
-        }).expect("Thread spawning failed");
-    }
-    sender
-}
-```
+* Timothée Pillard [@tpillard](https://twitter.com/tpillard)
+* à Gandi depuis plus de 5 ans
+* développe des trucs sur le site Web Gandi: espace client, ...
 ]
 
 ---
-# Thank you !
 
-_INSERT FUNNY ANIMATED GIF HERE_
+# Julien
 
-Latest version is [always available on github](https://github.com/julienw/remark-mozilla).
+.flex[
+![Julien](images/julien.jpg)
+
+* Julien Wajsberg [@jwajsberg](https://twitter.com/jwajsberg)
+* à Mozilla depuis plus de 5 ans
+* développeur sur [perf.html](https://github.com/devtools-html/perf.html/)
+depuis plus d'un an
+]
+
+---
+
+# On va parler de...
+
+1. React
+2. Redux
+3. (si on a le temps) du SSR
+4. à retenir !
+
+---
+
+class: center, middle
+
+# Parlons un peu de React
+
+---
+# Fontionnement de React
+## en quelques mots
+
+
+---
+
+class: center, middle
+
+# Redux: qu'est-ce qui change ?
+
+---
+# Merci !
+
+La présentation est disponible en ligne à l'adresse
+.smaller[https://julienw.github.io/presentation-react-perf-gandi-2018/index.html]
+
 
     </textarea>
     <script src="./lib/remark.js">
