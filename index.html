@@ -57,10 +57,218 @@ class: center, middle
 # Parlons un peu de React
 
 ---
-# Fontionnement de React
-## en quelques mots
+# Un composant React simple
+
+Une classe qui étend `Component`, avec une fonction `render` qui retourne un JSX:
+
+```javascript
+class Application extends React.Component {
+  render() {
+    return <div>{this.props.content}</div>;
+  }
+}
+```
+
+---
+# JSX, c'est pas magique
+
+JSX est transpilé, généralement par Babel, vers du JavaScript:
+
+```js
+class Application extends React.Component {
+  render() {
+    return React.createElement(
+      'div', null, this.props.content
+    );
+  }
+}
+```
 
 
+---
+# Un composant React simple
+## Style *stateless* ou *fonctionnel*
+
+Une fonction qui prend un objet en paramètre et retourne un JSX:
+
+```js
+function Application(props) {
+  return <div>{props.content}</div>;
+}
+```
+
+Contrairement à une croyance répandue, **ce n'est pas** particulièrement optimisé
+par React et c'est exactement équivalent au style précédent.
+
+---
+# Comment React fait le rendu
+## Premier rendu
+
+Il n'y a qu'une seule manière de déclencher un premier rendu: appeler
+`ReactDOM.render`:
+
+```js
+ReactDOM.render(
+  <Application content='Hello World!'/>,
+  document.getElementById('root')
+);
+```
+
+React appelle la méthode `render` de cet élément, puis continue récursivement
+avec tous les enfants.
+
+---
+# Comment React fait le rendu
+## Updates suivantes
+
+Une update peut être déclenchée par:
+1. un nouvel appel à `ReactDOM.render` avec le même composant
+2. le `state` d'un composant change avec la méthode `setState`. .smallest[C'est aussi ainsi
+que les composants connectés à Redux sont mis à jour.]
+3. les `props` d'un composant changent. Cela est forcément une conséquence des
+deux premiers cas.
+
+---
+# Comment React fait le rendu
+## Algorithme de réconciliation
+
+Lorsqu'il y a une update, React va appeler `render` de manière récursive sur
+l'arbre obtenu depuis l'objet mis à jour.
+
+Lorsque l'élément au même endroit est du même type, React ne va que changer ses
+props si besoin et réaliser une *update* de l'instance existante.
+Sinon il va *unmount* l'instance existante et
+*mount* une nouvelle instance du nouveau composant.
+
+---
+# Algorithme de mise à jour: conséquences
+
+1. L'algorithme est joué à chaque update ⇨ attention à ne pas réaliser d'updates
+plus souvent que nécessaire.
+2. Les méthodes `render` ainsi que les autres méthodes du cycle de vie d'un
+rendu sont exécutées à chaque update ⇨ attention à leurs caractéristiques de
+performance.
+3. L'algorithme lui-même est O(n) d'après les développeurs de React. Donc un
+arbre plus gros va linéairement augmenter la durée de l'algorithme.
+
+---
+# 1. Ne pas réaliser plus d'updates que nécessaire
+
+Une update sera déclenchée à chaque appel à `setState`. Donc:
+
+* éviter de mettre dans le `state` des choses inutiles au `render`.
+* éviter de déclencher trop de `setState` en réponse à des event handlers.
+
+---
+# 2. Attention à la performance de `render`
+
+* traiter le rendu d'une liste: diviser en morceaux ou rendre la liste virtuelle.
+* attention aux calculs coûteux: il vaut mieux les faire en amont et stocker le
+résultat dans le state.
+* c'est la même chose pour `componentWillUpdate`, `componentDidUpdate` etc.
+* un `setState` dans `componentDidUpdate` va déclencher un nouveau cycle d'update
+
+---
+# 3. Aider l'algorithme de réconciliation à vous aider
+
+* essayer de changer l'état au plus proche du changement d'UI. Redux peut aider
+ici.
+* `shouldComponentUpdate` et `PureComponent` sont des bons outils pour stopper
+la propagation de l'update, en quelque sorte pour "couper" des branches de l'arbre.
+* lorsqu'on rend des listes, il ne faut pas oublier de mettre l'attribut *key*
+
+---
+# Reparlons de `shouldComponentUpdate`
+
+* appelée au début du processus d'update d'un composant
+* si la méthode retourne `false` le rendu est arrêté pour ce composant... et
+tous ses enfants
+* très bonne manière de diminuer le coût d'une passe de rendu
+
+---
+# `shouldComponentUpdate`
+## Un exemple
+
+.smallest[
+```js
+class ComplexPanel extends React.Component {
+  // Note: this syntax, new but supported by Babel, automatically binds the
+  // method with the object instance.
+  onClick = () => {
+    this.setState({ detailsOpen: true });
+  }
+
+  // Return false to avoid a render
+* shouldComponentUpdate(nextProps, nextState) {
+    // Note: this works only if `summary` and `content` are primitive data
+    // (eg: string, number) or immutable data
+    // (keep reading to know more about this)
+*   return nextProps.summary !== this.props.summary
+*     || nextProps.content !== this.props.content
+*     || nextState.detailsOpen !== this.state.detailsOpen;
+  }
+
+  render() {
+    return (
+      <div>
+        <ComplexSummary summary={this.props.summary} onClick={this.onClick}/>
+        {this.state.detailsOpen
+          ? <ComplexContent content={this.props.content} />
+          : null}
+      </div>
+    );
+  }
+}
+```
+]
+
+---
+# `shouldComponentUpdate`
+## Les pièges
+
+* Exécuté à chaque render cycle, donc il doit être performant. Donc pas de comparaison coûteuse.
+* Oublier de le modifier lorsqu'on rajoute des propriétés ou du state au
+composant. D'où l'intérêt de...
+
+---
+# `PureComponent`
+## Une implémentation par défaut
+
+Un `PureComponent` n'est qu'un `Component` avec une implémentation de
+`shouldComponentUpdate` efficace: elle vérifie si chaque prop et chaque
+propriété d'état est strictement égale à sa valeur précédente. Si oui, elle
+retourne `false` et le rendu est annulé.
+
+Cela ne fonctionne que si on applique l'immutabilité de ces valeurs.
+.smallest[plus d'infos dans quelques instants...]
+
+---
+# `PureComponent`
+## Le même exemple, en plus simple
+
+.smaller[
+```js
+*class ComplexPanel extends React.PureComponent {
+  // Note: this syntax, new but supported by Babel, automatically binds the
+  // method with the object instance.
+  onClick = () => {
+    // Running this repeatidly won't render more than once.
+    this.setState({ detailsOpen: true });
+  }
+
+  render() {
+    return (
+      <div>
+        <ComplexSummary summary={this.props.summary} onClick={this.onClick}/>
+        {this.state.detailsOpen
+          ? <ComplexContent content={this.props.content} />
+          : null}
+      </div>
+    );
+  }
+}
+```
+]
 ---
 
 class: center, middle
