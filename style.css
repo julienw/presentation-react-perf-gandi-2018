@@ -10,7 +10,7 @@ body {
   font-family: 'Zilla Slab', sans-serif;
   font-size: 1.5em;
 }
-.remark-code, .remark-inline-code { font-family: 'Fira Code', monospace; }
+.remark-code, .remark-inline-code { font-family: 'Fira Mono', monospace; }
 .remark-code {
   font-size: .7em;
 }
