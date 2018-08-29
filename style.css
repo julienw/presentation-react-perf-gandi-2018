@@ -132,3 +132,8 @@ a:hover {
 .flex > * {
   flex: 1;
 }
+
+.flex-justify-between {
+  display: flex;
+  justify-content: space-between;
+}
