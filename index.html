@@ -239,7 +239,7 @@ Un `PureComponent` n'est qu'un `Component` avec une implémentation de
 propriété d'état est strictement égale à sa valeur précédente. Si oui, elle
 retourne `false` et le rendu est annulé.
 
-Cela ne fonctionne que si on applique l'immutabilité de ces valeurs.
+Cela ne fonctionne que si on applique l'*immutabilité* de ces valeurs.
 .smallest[plus d'infos dans quelques instants...]
 
 ---
@@ -269,6 +269,116 @@ Cela ne fonctionne que si on applique l'immutabilité de ces valeurs.
 }
 ```
 ]
+
+---
+class: center, middle
+
+On appelle *immutabilité* le principe selon lequel on ne change plus le contenu
+d'une structure après sa création.
+
+---
+class: center, middle
+
+Autrement dit, si on veut changer le contenu d'une structure, on doit *recréer
+cette structure*.
+--
+
+.smaller[Tout en réutilisant ce qui ne change pas.]
+
+---
+class: center, middle
+
+Un exemple ?
+
+---
+# Immutabilité
+## Un exemple avec un tableau
+
+```js
+// Ajouter un élément dans un tableau
+stateArray = [...stateArray, newElement];
+
+// Pour changer une propriété du state
+this.setState(({ stateArray }) => ({
+  stateArray: [...stateArray, newElement],
+}));
+```
+Notez qu'on crée un nouveau tableau, mais on ne recrée pas chacun des éléments
+car eux n'ont pas changé.
+
+---
+# Immutabilité
+## Exemple pour retirer un élément d'un tableau
+
+```js
+this.setState(({ stateArray }) => {
+  // Removing an element is more involved.
+  const newArray = stateArray.filter(
+    element => element !== removeElement
+  );
+  return { stateArray: newArray };
+});
+```
+
+--
+
+Que se passe-t-il lorsque l'élément n'est pas présent dans le tableau ?
+
+---
+class: center, middle
+
+On doit recréer une structure si on veut changer le contenu de cette structure.
+
+---
+class: center, middle
+
+On doit recréer une structure *si et seulement si* on veut changer le contenu de cette structure.
+
+---
+class: center, middle
+
+Autrement dit: on ne change pas la structure si on ne change pas son contenu !
+
+---
+# Immutabilité
+## Améliorons l'exemple
+
+```js
+this.setState(({ stateArray }) => {
+  // Removing an element is more involved.
+  const newArray = stateArray.filter(
+    element => element !== removeElement
+  );
+
+  return {
+    stateArray:
+*      newArray.length === stateArray.length
+*      ? stateArray
+*      : newArray
+  };
+});
+```
+
+---
+# Trucs à faire attention
+## Changer les références par inadvertance
+* `array.filter`, `array.map`, ... comme on l'a vu plus tôt
+*  `[]`, `{}`:
+
+```js
+return selectors.getUsefulData(state) || [];
+```
+
+* `function.bind` et fonctions anonymes:
+
+.smaller[
+```js
+render() {
+  return <ComplexContent onClick={() => this.doSomething()} />;
+}
+```
+]
+
 ---
 
 class: center, middle
