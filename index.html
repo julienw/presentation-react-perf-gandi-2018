@@ -759,9 +759,7 @@ _SURPRISE_: Vous utilisez _deja_ des `PureComponent`  - et, a priori pas qu'un p
 ```javascript
   const selectOneTranslatedTab = (state, name) => {
     const tab = selectOneTab(state, name);
-    return tab
-      ? { ...tab, translated_label: translate(tab.name) }
-      : undefined
+    return tab && { ...tab, translated_label: translate(tab.name) }
   };
 ```
 ]
@@ -795,11 +793,7 @@ _SURPRISE_: Vous utilisez _deja_ des `PureComponent`  - et, a priori pas qu'un p
 ```javascript
   const selectOneTranslatedTab = createSelector(
     [selectOneTab, passName],
-    (tab) => {
-      return tab
-        ? { ...tab, translated_label: translate(tab.name) }
-        : undefined
-    },
+    (tab) => tab && { ...tab, translated_label: translate(tab.name) },
   );
 ```
 ]
