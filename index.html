@@ -502,70 +502,109 @@ class: center, middle
 ## mais *pourquoi* ?
 
 ---
-# 1. Simplifier la gestion de l'etat d'une application
-### Avant Redux:
+# .smaller[La gestion de l'etat d'une application]
+### Avant React:
 --
-L'etat est dissemine entre le DOM, des variables globales, Local Storage, etc..
---
+.smaller[L'etat est dissemine entre le DOM, des variables globales, Local Storage, etc...]
+
 .smaller[
 ```javascript
-  var path = window.location.hash;
-  var $tab = $(`.tab[data-hash="${path}"]`);
-  var shouldBeActiveButIsNot =
-    !$(`.tab[data-hash="${path}"]`)
-      .hasClass('is-active');
-  if (shouldBeActiveButIsNot) {
-    $('.tab.is-active').removeClass('is-active');
-    $tab.addClass('is-active');
+*  var path = window.location.hash;
+*  var $tab = $(`.tab[href="#${path}"]`);
+   var shouldBeActive = !$($tab).hasClass('is-active');
+   if (shouldBeActive) {
+      $('.tab.is-active').removeClass('is-active');
+*     $tab.addClass('is-active');
+   }
+```
+]
+---
+# .smaller[La gestion de l'etat d'une application]
+### Avec React:
+
+.smallest[L'etat est difficile a propager a d'autres composants.]
+.smallest[
+```javascript
+  class Tabs extends React.PureComponent {
+    state = { activeTab: 'businesses' }
+
+    handleClick = (evt) => {
+       const newActiveTab = evt.currentTarget.href.split('#')[1];
+*      this.setState(
+*        (prevState) => prevState.activeTab === newActiveTab
+*        ? prevState
+*        : { activeTab: newActiveTab }
+      );
+    }
+
+    render() {
+      return (
+        <ul>
+          {tabs.map((tab) => (
+            <li key={tab-${this.props.tab.name}}>
+*             <a onClick={this.handleClick}
+*                className={this.state.activeTab === ? tab.name : ''}
+                 href={`#${this.props.tab.name}`}
+              >
+                {this.props.tab.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      );
+    }
   }
 ```
 ]
 ---
+# .smaller[La gestion de l'etat d'une application]
+### Avec React:
 
-# 1. Simplifier la gestion de l'etat d'une application
+_“Lift the state UP”_ pattern to the rescue?
+.smallest[
+```javascript
+  class App extends React.PureComponent {
+    tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }],
+    state = { activeTab: 'businesses' }
+
+    setActiveTab = (newActiveTab) => {
+*      if (this.state.activeTab !== newActiveTab) this.setState({ activeTab: newActiveTab });
+    }
+
+    render() {
+      return (
+*        <Tabs setActiveTab={this.setActiveTab}
+*              activeTab={this.state.activeTab}
+               tabs={this.tabs}
+        />
+*        <Content activeTab={this.state.activeTab} />
+         <Footer />
+      );
+    }
+  }
+```
+]
+
+.smaller[Mais cela n'est pas sans consequences! Outre le _"props drilling"_, ce pattern amene forcement a des re-rendus non souhaites, depuis un point haut de l'arbre.]
+---
+# .smaller[La gestion de l'etat d'une application]
 ### Avec Redux:
---
-.smaller[Store a l'instant *t - 1*]
-.smallest[
-```javascript
-  { activeTab: 'individuals' }
-```
-]
---
-.smaller[Store a l'instant *t*]
-.smallest[
-```javascript
-  { activeTab: 'businesses' }
-```
-]
---
-.smaller[Store a l'instant *t + 1*]
-.smallest[
-```javascript
-  { activeTab: 'developers' }
-```
-]
---
-.smaller[Un objet decrit la modification a effectuer]
-.smallest[
-```javascript
-  { type: 'SET_ACTIVE_TAB', activeTab: 'developers' }
-```
-]
+  - Nous permet d'eviter de causer des re-rendus _(setState)_ plus haut dans l'arbre que necessaire.
+  - Nous permet d'eviter d'avoir a passer un grand nombre de props tout au long de l'arbe _(props drilling)_.
+  - Nous permet d'etablir une unique source de verite, accessible depuis tout point de l'application.
 
+.smaller[Et nous allons voir tres bientot comment mettre tout cela en oeuvre.]
 ---
 # Redux, OK
 ## qu'est ce qui change ?
 --
+.smaller[
 1. On n'eparpille plus l'etat de l'application, on le *centralise*
---
-2. Les changements d'etats se font au moyen d'objets simples qui decrivent le changement
---
+2. Les changements d'etats se font au moyen d'objets simples qui *decrivent le changement*
 3. Un changement d'etat est reflete par une fonction *pure* et non une succession d'effets de bord
---
 4. La recuperation de l'etat a un *instant t* s'en retrouve grandement facilitee depuis tout composant de l'application
---
-5. L'expression de l'UI a partir de l'etat de l'application avec un outil tel que React est *naturel*
+5. L'expression de l'UI n'importe ou dans l'arbre de composants a partir de l'etat de l'application avec un outil tel que React est *naturel*
+]
 
 ---
 # Redux, en pratique
