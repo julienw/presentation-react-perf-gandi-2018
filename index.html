@@ -631,9 +631,7 @@ _“Lift the state UP”_ pattern to the rescue?
   ```javascript
   import { connect } from 'react-redux';
 
-  const setActiveTabSlug = (tabSlub) => (dispatch) => {
-    dispatch({ type: 'SET_ACTIVE_TAB', tab: tab });
-  };
+  const setActiveTabSlug = (tab) => ({ type: 'SET_ACTIVE_TAB', tab });
 
   export function Tabs({ activeTabName, tabs, dispatch }) {
     return (
@@ -661,21 +659,21 @@ _“Lift the state UP”_ pattern to the rescue?
 # React avec Redux, en pratique
 ## 1. react-redux `connect`
 
-Injecter des *action creators* en `props` avec `connect` et `bindActionCreators`
-  .smallest[
+.smaller[Injecter des *action creators* en `props` avec `connect`]
+.smallest[
 ```javascript
   import { connect, bindActionCreators } from 'react-redux';
-  import { setActiveTabActionCreator } from './actions';
+*  import { setActiveTabActionCreator } from './actions';
 
-  export function Tabs({ activeTabName, tabs, dispatch }) {
+*  export function Tabs({ activeTabName, tabs, setActiveTab }) {
     return (
       <ul>
         {tabs.map((tab) => (
           <li key={tab-${tab.name}}>
-            <a onClick={() => { setActiveTab(tab.name) }}
+*            <a onClick={() => { setActiveTab(tab.name) }}
                 className={activeTabName === ? tab.name : ''}
                 href={\`#${tab.name}\`}
-            >
+             >
               {tab.label}
             </a>
           </li>
@@ -684,17 +682,15 @@ Injecter des *action creators* en `props` avec `connect` et `bindActionCreators`
     );
   }
   
-  const mapDispatchToProps = (dispatch) => bindActionCreators({
-    setActiveTab: setActiveTabActionCreator
-  });
-  export default const ConnectedTabs = connect(mapStateToProps, mapDispatchToProps)(Tabs);
+*  const mapDispatchToProps = (dispatch) => ({ setActiveTab: setActiveTabActionCreator });
+*  export default const ConnectedTabs = connect(mapStateToProps, mapDispatchToProps)(Tabs);
 ```
 ]
 ---
 # React avec Redux, en pratique
 ## 1. react-redux `connect`
 
-L'usage reste le meme:
+Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
 
   ```javascript
   ...
