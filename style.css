@@ -65,6 +65,10 @@ li {
   text-indent: -1.25em; /* empirically found */
 }
 
+li > * {
+  text-indent: initial; /* reset the text-indent for children */
+}
+
 li:before {
   margin: 0 .3em;
   color: var(--orange);
