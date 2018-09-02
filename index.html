@@ -531,16 +531,13 @@ class: center, middle
 # .smaller[La gestion de l'etat d'une application]
 ### Avec React:
 
-_“Lift the state UP”_ pattern to the rescue?
+.smaller[_“Lift the state UP”_ pattern to the rescue?]
 .smallest[
 ```javascript
   class App extends React.PureComponent {
     tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }];
     state = { activeTab: 'businesses' };
-
-    setActiveTab = (newActiveTab) => {
-*     this.setState({ activeTab: newActiveTab });
-    }
+*    setActiveTab = (newActiveTab) => { this.setState({ activeTab: newActiveTab }); }
 
     render() {
       return (
