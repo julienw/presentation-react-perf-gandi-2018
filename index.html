@@ -573,7 +573,89 @@ _“Lift the state UP”_ pattern to the rescue?
 # React avec Redux, en pratique
 ## 1. react-redux `connect`
 
+```javascript
+import { connect } from 'react-redux';
+```
+
+Nous permet d'introduire la notion de composants _connectes_ (ou _Container_) par opposition aux composants _de presentation_.
+
+.smallest[Note: Vous connaissez probablement cette notion via l'ancienne nomenclature:
+
+_Smart components_ vs _Dumb components_]
+
+---
+
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])(Component);
+```
+]
+
+Connecte un composant React au store Redux, en retournant une *nouvelle classe* de composant.
+
 --
+
+.smaller[
+Nous allons maintenant nous interesser aux usages les plus courants de `connect` via ses arguments `mapStateToProps` et `mapDispatchToProps`.
+]
+
+.smallest[
+```javascript
+connect([mapStateToProps], [mapDispatchToProps])(Component);
+```
+]
+
+.smallest[
+Notes:
+- [La documentation de `connect`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) fait _~20 000_ caracteres et chaque mot y est important.
+- On pourrait faire un talk de ~30minutes pour _chacun de ses arguments_.
+]
+
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(mapStateToProps)(Component);
+```
+]
+
+Si `mapStateToProps(state, [ownProps])` est defini, le nouveau composant souscrira aux mises a jour du store Redux.
+
+Autrement dit, cette fonction sera appellee apres *toute modification* faite au `state`.
+
+Il est donc _crucial_ que cette fonction soit performante.
+
+Des astuces pour rendre cette fonction performante dans quelques instants.
+
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(mapStateToProps)(Component);
+```
+]
+
+Si votre fonction `mapStateToProps(state, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appellee a chaque fois que ces props changent!
+
+.smallest[
+Note: Ce changement de `ownProps` est determine par un test `shallow-equality`.
+]
+
+Il est donc _doublement crucial_ que cette fonction soit performante, et de n'utiliser l'argument `ownProps` uniquement lorsque *necessaire*.
+
+.smaller[Attention donc a l'utilisation de cet argument pour des transformations de proprietes.]
+
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
 .smallest[
   ```javascript
   import { connect } from 'react-redux';
@@ -653,32 +735,6 @@ Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
     );
   }
   ```
----
-# React avec Redux, en pratique
-## 1. react-redux `connect`
---
-- Souscris un composant aux changements de `state`
---
-- Execute les fonctions `mapStateToProps` et `mapDispatchToProps` (*) passees en arguments
---
-  - a **chaque rendu initie par le composant parent**
---
-  - a **chaque modification du `state`**
-
----
-# React avec Redux, en pratique
-## 1. react-redux `connect`
-A l'exception de `mapDispatchToProps` qui n'est execute qu'une fois dans sa forme `mapDispatchToProps(dispatch)` vs `mapDispatchToProps(dispatch, props)`
----
-# React avec Redux, en pratique
-## 1. react-redux `connect`
-
-Par defaut, un composant connecte n'est re-rendu par `connect` *uniquement* lorsque le merge des proprietes finales n'est pas shallowequal a ses props precedentes.
-
-Si vous etes frileux en ce qui concerne les `PureComponent` et que vous utilisez `connect`:
-
-_SURPRISE_: Vous utilisez _deja_ des `PureComponent`  - et, a priori pas qu'un peu ;)
-
 ---
 # React avec Redux, en pratique
 ## 2. Les selecteurs
