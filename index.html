@@ -486,7 +486,7 @@ class: center, middle
 ```javascript
 *  var path = window.location.hash;
 *  var $tab = $(`.tab[href="#${path}"]`);
-   var shouldBeActive = !$($tab).hasClass('is-active');
+   var shouldBeActive = !$tab.hasClass('is-active');
    if (shouldBeActive) {
       $('.tab.is-active').removeClass('is-active');
 *     $tab.addClass('is-active');
@@ -504,24 +504,20 @@ class: center, middle
     state = { activeTab: 'businesses' }
 
     handleClick = (evt) => {
-       const newActiveTab = evt.currentTarget.href.split('#')[1];
-*      this.setState(
-*        (prevState) => prevState.activeTab === newActiveTab
-*        ? prevState
-*        : { activeTab: newActiveTab }
-      );
+      const newActiveTab = evt.currentTarget.href.slice(1);
+*     this.setState({ activeTab: newActiveTab });
     }
 
     render() {
       return (
         <ul>
           {tabs.map((tab) => (
-            <li key={tab-${this.props.tab.name}}>
+            <li key={`tab-${tab.name}`}>
 *             <a onClick={this.handleClick}
-*                className={this.state.activeTab === ? tab.name : ''}
-                 href={`#${this.props.tab.name}`}
+*                className={this.state.activeTab === tab.name ? 'is-active' : ''}
+                 href={`#${tab.name}`}
               >
-                {this.props.tab.label}
+                {tab.label}
               </a>
             </li>
           ))}
@@ -539,11 +535,11 @@ _“Lift the state UP”_ pattern to the rescue?
 .smallest[
 ```javascript
   class App extends React.PureComponent {
-    tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }],
-    state = { activeTab: 'businesses' }
+    tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }];
+    state = { activeTab: 'businesses' };
 
     setActiveTab = (newActiveTab) => {
-*      if (this.state.activeTab !== newActiveTab) this.setState({ activeTab: newActiveTab });
+*     this.setState({ activeTab: newActiveTab });
     }
 
     render() {
@@ -565,7 +561,7 @@ _“Lift the state UP”_ pattern to the rescue?
 # .smaller[La gestion de l'etat d'une application]
 ### Avec Redux:
   - Nous permet d'eviter de causer des re-rendus _(setState)_ plus haut dans l'arbre que necessaire.
-  - Nous permet d'eviter d'avoir a passer un grand nombre de props tout au long de l'arbe _(props drilling)_.
+  - Nous permet d'eviter d'avoir a passer un grand nombre de props tout au long de l'arbre _(props drilling)_.
   - Nous permet d'etablir une unique source de verite, accessible depuis tout point de l'application.
 
 .smaller[Et nous allons voir tres bientot comment mettre tout cela en oeuvre.]
@@ -626,7 +622,7 @@ connect(mapStateToProps)(Component);
 
 Si `mapStateToProps(state, [ownProps])` est defini, le nouveau composant souscrira aux mises a jour du store Redux.
 
-Autrement dit, cette fonction sera appellee apres *toute modification* faite au `state`.
+Autrement dit, cette fonction sera appelée apres *toute modification* faite au `state`.
 
 Il est donc _crucial_ que cette fonction soit performante.
 
@@ -642,7 +638,7 @@ connect(mapStateToProps)(Component);
 ```
 ]
 
-Si votre fonction `mapStateToProps(state, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appellee a chaque fois que ces props changent!
+Si votre fonction `mapStateToProps(state, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appelée a chaque fois que ces props changent!
 
 .smallest[
 Note: Ce changement de `ownProps` est determine par un test `shallow-equality`.
@@ -660,15 +656,15 @@ Il est donc _doublement crucial_ que cette fonction soit performante, et de n'ut
   ```javascript
   import { connect } from 'react-redux';
 
-  const setActiveTabSlug = (tab) => ({ type: 'SET_ACTIVE_TAB', tab });
+  const setActiveTabActionCreator = (tab) => ({ type: 'SET_ACTIVE_TAB', tab });
 
   export function Tabs({ activeTabName, tabs, dispatch }) {
     return (
       <ul>
         {tabs.map((tab) => (
-          <li key={tab-${tab.name}}>
-            <a onClick={() => { dispatch(setActiveTab(tab.name)) }}
-                className={activeTabName === ? tab.name : ''}
+          <li key={`tab-${tab.name}`}>
+            <a onClick={() => { dispatch(setActiveTabActionCreator(tab.name)) }}
+                className={activeTabName === tab.name ? 'is-active' : ''}
                 href={`#${tab.name}`}
             >
               {tab.label}
@@ -698,9 +694,9 @@ Il est donc _doublement crucial_ que cette fonction soit performante, et de n'ut
     return (
       <ul>
         {tabs.map((tab) => (
-          <li key={tab-${tab.name}}>
+          <li key={`tab-${tab.name}`}>
 *            <a onClick={() => { setActiveTab(tab.name) }}
-                className={activeTabName === ? tab.name : ''}
+                className={activeTabName === tab.name ? 'is-active' : ''}
                 href={\`#${tab.name}\`}
              >
               {tab.label}
@@ -711,7 +707,7 @@ Il est donc _doublement crucial_ que cette fonction soit performante, et de n'ut
     );
   }
   
-*  const mapDispatchToProps = (dispatch) => ({ setActiveTab: setActiveTabActionCreator });
+*  const mapDispatchToProps = ({ setActiveTab: setActiveTabActionCreator });
 *  export default const ConnectedTabs = connect(mapStateToProps, mapDispatchToProps)(Tabs);
 ```
 ]
