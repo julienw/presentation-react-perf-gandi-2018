@@ -592,7 +592,7 @@ Connecte un composant React au store Redux, en retournant une *nouvelle classe* 
 --
 
 .smaller[
-Nous allons maintenant nous interesser aux usages les plus courants de `connect` via ses arguments `mapStateToProps` et `mapDispatchToProps`.
+Nous allons maintenant nous interesser aux usages _les plus courants_ de `connect` via ses arguments `mapStateToProps` et `mapDispatchToProps`.
 ]
 
 .smallest[
@@ -644,6 +644,53 @@ Note: Ce changement de `ownProps` est determine par un test `shallow-equality`.
 .smaller[Il est donc _doublement crucial_ que cette fonction soit performante, et de n'utiliser l'argument `ownProps` uniquement lorsque *necessaire*.]
 
 .smaller[Attention donc a l'utilisation de cet argument pour des transformations de proprietes.]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(null, mapDispatchToProps)(Component);
+```
+]
+
+.smaller[
+`mapDispatchToProps(dispatch, [ownProps])` vous permet d'injecter des _bound action creators_ sous forme de `props`.
+]
+
+Si `mapDispatchToProps(dispatch, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appelée a chaque fois que ces props changent!
+
+.smallest[
+Note: Si vous utilisez cette syntaxe, il y a de grandes chances pour que vous retourniez de nouvelles références a chaque fois.
+]
+
+.smallest[
+Note: Ce changement de `ownProps` est determine par un test `shallow-equality`, de la meme manière que pour `mapStateToProps`.
+]
+
+.smallest[
+_ProTip shorthand syntax_: `mapDispatchToProps = { doStuff: doStuffActionCreator }`;
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(mapStateToProps, mapDispatchToProps, [mergeProps], [options])(Component);
+```
+]
+
+Ok. Qu'en est-il du rendu de ces composants connectés?
+
+--
+
+Par défaut, `connect(...)(MyComponent)` effectuera un `render` _si et seulement si_ les nouvelles `mergedProps`
+(résultat de la fusion de `ownProps`, `stateProps` et `dispatchProps`) ne sont pas `shallow-equal` a leur version précédente.
+
+.smaller[
+Note: Pour en savoir plus sur les comportements autres que celui par défaut, voir la documentation des arguments `mergeProps` et `options`.
+]
 
 ---
 # React avec Redux, en pratique
@@ -818,7 +865,7 @@ function reducer(state, action) {
 function reducer(state, action) {
   if (
     action.type === 'SET_ACTIVE_TAB'
-    && action.activeTab !== state.find(tab) => tab.active)?.name
+    && action.activeTab !== state.find((tab) => tab.active)?.name
   ) {
     return {
       tabs: state.tabs.map((tab) => (
