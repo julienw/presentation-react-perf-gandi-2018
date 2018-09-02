@@ -126,9 +126,9 @@ a:hover {
 
 .flex {
   display: flex;
+  justify-content: space-around;
 }
 
-.flex p {
-  padding: 0;
-  margin: 0;
+.flex > * {
+  flex: 1;
 }
