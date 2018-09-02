@@ -6,6 +6,7 @@
     <link rel='stylesheet' href='fonts/zilla/zilla.css' />
     <link rel='stylesheet' href='fonts/fira/fira.css' />
     <link rel='stylesheet' href='style.css' />
+    <link rel="stylesheet" href="./lib/mermaid.css">
   </head>
   <body>
     <textarea id="source">
@@ -119,6 +120,16 @@ avec tous les enfants.
 
 ---
 # Comment React fait le rendu
+## Premier rendu
+
+<div class="mermaid">
+graph TD
+  Root --> Component
+  Component  --> Content
+</div>
+
+---
+# Comment React fait le rendu
 ## Updates suivantes
 
 Une update peut être déclenchée par:
@@ -132,14 +143,91 @@ deux premiers cas.
 # Comment React fait le rendu
 ## Algorithme de réconciliation
 
-Lorsqu'il y a une update, React va appeler `render` de manière récursive sur
-l'arbre obtenu depuis l'objet mis à jour.
+.flex[
+<div class="mermaid">
+graph TD
+  Root --> Component
+  Component --> NewContent
+  style NewContent fill:#f88
+  style Root stroke-width:4px
+</div>
+
+.group[
+Lorsqu'il y a une update d'un composant, React va appeler la méthode `render` de
+ce composant.
+
+Puis il compare cela avec le retour précédent.
+]
+]
+---
+# Comment React fait le rendu
+## Algorithme de réconciliation
+
+.flex[
+<div class="mermaid">
+graph TD
+  Root --> Component
+  Component --> NewContent
+  style NewContent fill:#f88
+  style Component stroke-width:4px
+</div>
 
 Lorsque l'élément au même endroit est du même type, React ne va que changer ses
 props si besoin et réaliser une *update* de l'instance existante.
+]
+---
+# Comment React fait le rendu
+## Algorithme de réconciliation
+
+.flex[
+<div class="mermaid">
+graph TD
+  Root --> Component
+  Component --> NewContent
+  style NewContent fill:#f88
+  style NewContent stroke-width:4px
+</div>
+
 Sinon il va *unmount* l'instance existante et
 *mount* une nouvelle instance du nouveau composant.
+]
+---
+# Rappel: cycles de vie
+## Mount
 
+.center[
+<div class="mermaid">
+graph TD
+  componentWillMount[componentWillMount / getDerivedStateFromProps]
+  construct --> componentWillMount
+  componentWillMount --> render
+  render --> componentDidMount
+</div>
+]
+---
+# Rappel: cycles de vie
+## Unmount
+
+.center[
+<div class="mermaid">
+graph TD
+  componentWillUnmount
+</div>
+]
+---
+# Rappel: cycles de vie
+## Update
+.center[
+<div class="mermaid" style='height: 50vh'>
+graph TD
+  componentWillReceiveProps[componentWillReceiveProps / getDerivedStateFromProps]
+  componentWillReceiveProps --> shouldComponentUpdate
+  shouldComponentUpdate --> componentWillUpdate
+  componentWillUpdate --> render
+  render --> getSnapshotBeforeUpdate
+  getSnapshotBeforeUpdate --> componentDidUpdate
+</div>
+]
 ---
 # Algorithme de mise à jour: conséquences
 
@@ -158,6 +246,7 @@ Une update sera déclenchée à chaque appel à `setState`. Donc:
 
 * éviter de mettre dans le `state` des choses inutiles au `render`.
 * éviter de déclencher trop de `setState` en réponse à des event handlers.
+Solution possible: debounce
 
 ---
 # 2. Attention à la performance de `render`
@@ -175,7 +264,9 @@ résultat dans le state.
 ici.
 * `shouldComponentUpdate` et `PureComponent` sont des bons outils pour stopper
 la propagation de l'update, en quelque sorte pour "couper" des branches de l'arbre.
-* lorsqu'on rend des listes, il ne faut pas oublier de mettre l'attribut *key*
+* lorsqu'on rend des listes, il ne faut pas oublier de mettre l'attribut *key*.
+Cela permet à la réconciliation de retrouver et comparer des éléments **même lorsque l'ordre
+change**.
 
 ---
 # Reparlons de `shouldComponentUpdate`
@@ -393,12 +484,36 @@ La présentation est disponible en ligne à l'adresse
 
 
     </textarea>
-    <script src="./lib/remark.js">
-    </script>
-    <script>
+    <script src="./lib/remark.js"></script>
+    <script src="./lib/mermaid.min.js"></script>
+ <script>
+// REMARK
 var slideshow = remark.create({
   highlightLines: true,
 });
+
+// MERMAID
+// Script comes from https://github.com/knsv/mermaid/issues/360#issuecomment-414298027
+// don't let mermaid automatically load on start
+mermaid.initialize({
+  startOnLoad: false,
+  cloneCssStyles: false
+});
+
+function initMermaidInSlide(slide) {
+  var slideIndex = slide.getSlideIndex();
+  // caution: no API to get the DOM element of current slide in remark, this might break in the future
+  var currentSlideElement = document.querySelectorAll(".remark-slides-area .remark-slide")[slideIndex];
+  var currentSlideMermaids = currentSlideElement.querySelectorAll(".mermaid");
+  if (currentSlideMermaids.length !== 0) {
+    mermaid.init(undefined, currentSlideMermaids);
+  }
+}
+
+// first starting slide won't trigger the slide event, manually init mermaid
+initMermaidInSlide(slideshow.getSlides()[slideshow.getCurrentSlideIndex()])
+// on each slide event, trigger init mermaid
+slideshow.on('afterShowSlide', initMermaidInSlide);
     </script>
   </body>
 </html>
