@@ -475,32 +475,7 @@ class: center, middle
 
 # Et Redux dans tout ca ?
 --
-## et puis d'abord, c'est quoi Redux?
---
-### _a peu pres, hein_
-
----
-# Qu'est-ce que Redux?
---
-- Un unique conteneur d'*etat* pour une application
---
-- Une unique *source de verite*
---
-- L'assurance d'un etat *predictible*
---
-- Fonctionne de la meme maniere dans *differents environnements*
---
-- Une *testabilite* accrue
---
-- Une *experience de developpement* efficace
-
----
-class: center, middle
-
-# Redux, soit
---
-## mais *pourquoi* ?
-
+## et puis d'abord, _pourquoi_ Redux?
 ---
 # .smaller[La gestion de l'etat d'une application]
 ### Avant React:
@@ -522,7 +497,7 @@ class: center, middle
 # .smaller[La gestion de l'etat d'une application]
 ### Avec React:
 
-.smallest[L'etat est difficile a propager a d'autres composants.]
+.smaller[L'etat est difficile a propager a d'autres composants.]
 .smallest[
 ```javascript
   class Tabs extends React.PureComponent {
@@ -594,34 +569,6 @@ _“Lift the state UP”_ pattern to the rescue?
   - Nous permet d'etablir une unique source de verite, accessible depuis tout point de l'application.
 
 .smaller[Et nous allons voir tres bientot comment mettre tout cela en oeuvre.]
----
-# Redux, OK
-## qu'est ce qui change ?
---
-.smaller[
-1. On n'eparpille plus l'etat de l'application, on le *centralise*
-2. Les changements d'etats se font au moyen d'objets simples qui *decrivent le changement*
-3. Un changement d'etat est reflete par une fonction *pure* et non une succession d'effets de bord
-4. La recuperation de l'etat a un *instant t* s'en retrouve grandement facilitee depuis tout composant de l'application
-5. L'expression de l'UI n'importe ou dans l'arbre de composants a partir de l'etat de l'application avec un outil tel que React est *naturel*
-]
-
----
-# Redux, en pratique
-## Les mots-clef
---
-1. `State`: Un objet qui reflete l'etat de notre application
---
-2. `Store`: Le conteneur du `state`
---
-3. `Action`: Un objet simple qui decrit une modification du `state` a partir d'un `type` et d'une `payload` (optionnelle).
---
-4. `Action creator`: Une fonction qui retourne une `action`.
---
-5. `Selector`: Une fonction qui prend `(state, [props])` en arguments et retourne une donnee du `state`
---
-6. `Reducer`: Une fonction qui prend `(state, action)` en arguments et retourne un *nouveau* `state`
-
 ---
 # React avec Redux, en pratique
 ## 1. react-redux `connect`
@@ -873,6 +820,55 @@ function reducer(state, action) {
 ```
 ]
 ---
+# Merci !
+
+La présentation est disponible en ligne à l'adresse
+.smaller[https://julienw.github.io/presentation-react-perf-gandi-2018/index.html]
+---
+# Annexe
+
+---
+# Qu'est-ce que Redux?
+--
+- Un unique conteneur d'*etat* pour une application
+--
+- Une unique *source de verite*
+--
+- L'assurance d'un etat *predictible*
+--
+- Fonctionne de la meme maniere dans *differents environnements*
+--
+- Une *testabilite* accrue
+--
+- Une *experience de developpement* efficace
+
+---
+# Redux, en pratique
+## Les mots-clef
+--
+1. `State`: Un objet qui reflete l'etat de notre application
+--
+2. `Store`: Le conteneur du `state`
+--
+3. `Action`: Un objet simple qui decrit une modification du `state` a partir d'un `type` et d'une `payload` (optionnelle).
+--
+4. `Action creator`: Une fonction qui retourne une `action`.
+--
+5. `Selector`: Une fonction qui prend `(state, [props])` en arguments et retourne une donnee du `state`
+--
+6. `Reducer`: Une fonction qui prend `(state, action)` en arguments et retourne un *nouveau* `state`
+
+# Redux, OK
+## qu'est ce qui change ?
+--
+.smaller[
+1. On n'eparpille plus l'etat de l'application, on le *centralise*
+2. Les changements d'etats se font au moyen d'objets simples qui *decrivent le changement*
+3. Un changement d'etat est reflete par une fonction *pure* et non une succession d'effets de bord
+4. La recuperation de l'etat a un *instant t* s'en retrouve grandement facilitee depuis tout composant de l'application
+5. L'expression de l'UI n'importe ou dans l'arbre de composants a partir de l'etat de l'application avec un outil tel que React est *naturel*
+]
+---
 # Performance avec React et Redux
 ## quand Redux travaille **avec** vous
 
@@ -911,12 +907,6 @@ function reducer(state, action) {
 # Performance avec React et Redux
 ## .flex-justify-between[.span[dans la vraie vie] _the necessary evil_]
 1. Ne pas respecter le principe d'immutabilite dans `mapStateToProps`
-
----
-# Merci !
-
-La présentation est disponible en ligne à l'adresse
-.smaller[https://julienw.github.io/presentation-react-perf-gandi-2018/index.html]
 
 
     </textarea>
