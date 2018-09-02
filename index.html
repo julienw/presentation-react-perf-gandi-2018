@@ -816,11 +816,14 @@ function reducer(state, action) {
 .smallest[
 ```javascript
 function reducer(state, action) {
-  if (action.type === 'SET_ACTIVE_TAB') {
+  if (
+    action.type === 'SET_ACTIVE_TAB'
+    && action.activeTab !== state.find(tab) => tab.active)?.name
+  ) {
     return {
       tabs: state.tabs.map((tab) => (
         tab.activeTab === (action.activeTab === tab.name)
-        ? state.tabs
+        ? tab
         : {
           ...tab,
           active: action.activeTab === tab.name,
