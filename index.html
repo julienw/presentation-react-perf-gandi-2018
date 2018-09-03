@@ -477,6 +477,89 @@ class: center, middle
 # Redux: qu'est-ce qui change ?
 
 ---
+
+class: center, middle
+
+# Des outils pour nous aider
+
+---
+# Mesurer avant de corriger
+
+Dans le monde de la perf, l'intuition est mauvaise conseillère.
+
+Généralement il faut donc *mesurer avant de corriger*.
+
+--
+Et *après* avoir corrigé.
+
+---
+# redux-logger
+
+![redux-logger en action](images/redux-logger.png)
+
+* affiche l'action et *la durée* pour la traiter de bout en bout
+* affiche le `state` avant/après
+* permet aussi un *diff*
+
+---
+# redux-devtools
+
+.center[
+![redux-devtools en action](images/redux-devtools.png)
+]
+---
+# redux-devtools
+
+* à peu près pareil, mais dans une interface pratique, en extension
+* Attention à l'overhead pour des stores volumineux. On peut utiliser des
+options lors de l'initialisation pour limiter cela.
+
+---
+# profilers
+
+![Avec le profileur de Firefox](images/markers.png)
+![Avec le profileur de Chrome](images/markers-chrome.png)
+
+---
+# profilers
+
+React 16, en mode développement, injecte des marqueurs indiquant les renders.
+
+À venir: une API pour que react-devtools puisse afficher ces informations et
+plus.
+
+---
+# profilers
+
+Ils permettent aussi de voir dans quelle partie de votre code on passe le plus
+de temps.
+
+.center[
+![Profiler de Firefox](images/profiler.png)
+![Profiler de Chrome](images/profiler-chrome.png)
+]
+
+---
+# profilers
+## Chrome affiche des infos par ligne
+
+.center[
+![Affiche les temps par ligne](images/profiler-inline-chrome.png)
+]
+
+---
+class: center, middle
+# Si vous avez raté le début...
+
+---
+# TLDR
+
+* PureComponents et immutabilité
+* mémoiser partout, mais avec discernement
+* mesurer avant et après les changements
+* lire la documentation des outils que vous utilisez
+
+---
 # Merci !
 
 La présentation est disponible en ligne à l'adresse
