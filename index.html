@@ -473,10 +473,441 @@ render() {
 ]
 
 ---
-
 class: center, middle
 
-# Redux: qu'est-ce qui change ?
+# Et Redux dans tout ca ?
+--
+## et puis d'abord, _pourquoi_ Redux?
+---
+# .smaller[La gestion de l'etat d'une application]
+### Avant React:
+--
+.smaller[L'etat est dissemine entre le DOM, des variables globales, Local Storage, etc...]
+
+.smaller[
+```javascript
+*  var path = window.location.hash;
+*  var $tab = $(`.tab[href="#${path}"]`);
+   var shouldBeActive = !$tab.hasClass('is-active');
+   if (shouldBeActive) {
+      $('.tab.is-active').removeClass('is-active');
+*     $tab.addClass('is-active');
+   }
+```
+]
+---
+# .smaller[La gestion de l'etat d'une application]
+### Avec React:
+
+.smaller[L'etat est difficile a propager a d'autres composants.]
+.smallest[
+```javascript
+  class Tabs extends React.PureComponent {
+    state = { activeTab: 'businesses' }
+
+    handleClick = (evt) => {
+      const newActiveTab = evt.currentTarget.href.slice(1);
+*     this.setState({ activeTab: newActiveTab });
+    }
+
+    render() {
+      return (
+        <ul>
+          {tabs.map((tab) => (
+            <li key={`tab-${tab.name}`}>
+*             <a onClick={this.handleClick}
+*                className={this.state.activeTab === tab.name ? 'is-active' : ''}
+                 href={`#${tab.name}`}
+              >
+                {tab.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+  }
+```
+]
+---
+# .smaller[La gestion de l'etat d'une application]
+### Avec React:
+
+.smaller[_“Lift the state UP”_ pattern to the rescue?]
+.smallest[
+```javascript
+  class App extends React.PureComponent {
+    tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }];
+    state = { activeTab: 'businesses' };
+*    setActiveTab = (newActiveTab) => { this.setState({ activeTab: newActiveTab }); }
+
+    render() {
+      return (
+*        <Tabs setActiveTab={this.setActiveTab}
+*              activeTab={this.state.activeTab}
+               tabs={this.tabs}
+        />
+*        <Content activeTab={this.state.activeTab} />
+         <Footer />
+      );
+    }
+  }
+```
+]
+
+.smaller[Mais cela n'est pas sans consequences! Outre le _"props drilling"_, ce pattern amene forcement a des re-rendus non souhaites, depuis un point haut de l'arbre.]
+---
+# .smaller[La gestion de l'etat d'une application]
+### Avec Redux:
+  - Nous permet d'eviter de causer des re-rendus _(setState)_ plus haut dans l'arbre que necessaire.
+  - Nous permet d'eviter d'avoir a passer un grand nombre de props tout au long de l'arbre _(props drilling)_.
+  - Nous permet d'etablir une unique source de verite, accessible depuis tout point de l'application.
+
+.smaller[Et nous allons voir tres bientot comment mettre tout cela en oeuvre.]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+```javascript
+import { connect } from 'react-redux';
+```
+
+Nous permet d'introduire la notion de composants _connectes_ (ou _Container_) par opposition aux composants _de presentation_.
+
+.smallest[Note: Vous connaissez probablement cette notion via l'ancienne nomenclature:
+
+_Smart components_ vs _Dumb components_]
+
+---
+
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])(Component);
+```
+]
+
+Connecte un composant React au store Redux, en retournant une *nouvelle classe* de composant.
+
+--
+
+.smaller[
+Nous allons maintenant nous interesser aux usages _les plus courants_ de `connect` via ses arguments `mapStateToProps` et `mapDispatchToProps`.
+]
+
+.smallest[
+```javascript
+connect([mapStateToProps], [mapDispatchToProps])(Component);
+```
+]
+
+.smallest[
+Notes:
+- [La documentation de `connect`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) fait _~20 000_ caracteres et chaque mot y est important.
+- On pourrait faire un talk de ~30minutes pour _chacun de ses arguments_.
+]
+
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(mapStateToProps)(Component);
+```
+]
+
+Si `mapStateToProps(state, [ownProps])` est defini, le nouveau composant souscrira aux mises a jour du store Redux.
+
+Autrement dit, cette fonction sera appelée apres *toute modification* faite au `state`.
+
+Il est donc _crucial_ que cette fonction soit performante.
+
+.smallest[Des astuces pour rendre cette fonction performante dans quelques instants.]
+
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(mapStateToProps)(Component);
+```
+]
+
+Si votre fonction `mapStateToProps(state, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appelée a chaque fois que ces props changent!
+
+.smallest[
+Note: Ce changement de `ownProps` est determine par un test `shallow-equality`.
+]
+
+.smaller[Il est donc _doublement crucial_ que cette fonction soit performante, et de n'utiliser l'argument `ownProps` uniquement lorsque *necessaire*.]
+
+.smaller[Attention donc a l'utilisation de cet argument pour des transformations de proprietes.]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(null, mapDispatchToProps)(Component);
+```
+]
+
+.smaller[
+`mapDispatchToProps(dispatch, [ownProps])` vous permet d'injecter des _bound action creators_ sous forme de `props`.
+]
+
+Si `mapDispatchToProps(dispatch, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appelée a chaque fois que ces props changent!
+
+.smallest[
+Note: Si vous utilisez cette syntaxe, il y a de grandes chances pour que vous retourniez de nouvelles références a chaque fois.
+]
+
+.smallest[
+Note: Ce changement de `ownProps` est determine par un test `shallow-equality`, de la meme manière que pour `mapStateToProps`.
+]
+
+.smallest[
+_ProTip shorthand syntax_: `mapDispatchToProps = { doStuff: doStuffActionCreator }`;
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+```javascript
+connect(mapStateToProps, mapDispatchToProps, [mergeProps], [options])(Component);
+```
+]
+
+Ok. Qu'en est-il du _rendu_ de ces composants connectés?
+
+--
+
+Par défaut, `connect(...)(MyComponent)` effectuera un `render` _si et seulement si_ les nouvelles `mergedProps`
+(résultat de la fusion de `ownProps`, `stateProps` et `dispatchProps`) ne sont pas `shallow-equal` a leur version précédente.
+
+.smaller[
+Note: Pour en savoir plus sur les comportements autres que celui par défaut, voir la documentation des arguments `mergeProps` et `options`.
+]
+
+---
+# React avec Redux, en pratique
+## 2. Les selecteurs
+.smallest[
+```javascript
+  // {
+  //   tabs: [{
+  //     name: 'developers',
+  //     label: 'Developers, developers, developers'
+  //   }],
+  //   activeTab: 'developers',
+  // }
+  const selectTabs = (state) => state.tabs;
+```
+]
+
+--
+.smallest[
+```javascript
+  const selectActiveTab = (state) =>
+    selectTabs(state).find((tab) => tab.name === state.activeTab);
+```
+]
+--
+.smallest[
+```javascript
+  const selectActiveTranslatedTab = (state) => {
+    const tab = selectActiveTab(state);
+    return tab && { ...tab, translated_label: translate(tab.name) }
+  };
+```
+]
+
+--
+
+Autant que possible, retourner la meme valeur en evitant de la recalculer a chaque fois.
+C'est ce qu'on appelle la _memoization_.
+
+---
+# React avec Redux, en pratique
+## 2. `createSelector` de `reselect`
+.smallest[
+```javascript
+  // {
+  //   tabs: [{
+  //     name: 'developers',
+  //     label: 'Developers, developers, developers'
+  //   }],
+  //   activeTab: 'developers',
+  // }
+  const selectTabs = (state) => state.tabs;
+```
+]
+
+--
+.smallest[
+```javascript
+  const selectActiveTabName = (state) => state.activeTab;
+  const selectActiveTab = createSelector(
+    [selectTabs, selectActiveTabName],
+    (tabs, name) => tabs.find((tab) => tab.name === name),
+  );
+```
+]
+--
+.smallest[
+```javascript
+  const selectActiveTranslatedTab = createSelector(
+    [selectActiveTab],
+    (tab) => tab && { ...tab, translated_label: translate(tab.name) },
+  );
+```
+]
+---
+# React avec Redux, en pratique
+## .smaller[2.1 Fonctions `reducer`: une approche naive]
+```javascript
+function reducer(state, action) {
+  if (action.type === 'SET_ACTIVE_TAB') {
+    return {
+      tabs: state.tabs.map((tab) => ({
+        ...tab,
+        active: action.activeTab === tab.name,
+      })),
+    };
+  }
+
+  return state;
+}
+```
+---
+# React avec Redux, en pratique
+## .smaller[2.1 Fonctions `reducer`: une approche naive]
+.smaller[
+```javascript
+function reducer(state, action) {
+  if (
+    action.type === 'SET_ACTIVE_TAB'
+    && action.activeTab !== state.find((tab) => tab.active)?.name
+  ) {
+    return {
+      tabs: state.tabs.map((tab) => (
+        tab.activeTab === (action.activeTab === tab.name)
+        ? tab
+        : {
+          ...tab,
+          active: action.activeTab === tab.name,
+        }
+      )),
+    };
+  }
+
+  return state;
+}
+```
+]
+---
+# React avec Redux, en pratique
+## .smaller[2.2 Fonctions `reducer`: une approche plus saine]
+
+.smallest[
+```javascript
+  function reducer(state, action) {
+    if (action.type === 'SET_ACTIVE_TAB') {
+      return {
+        ...state, // tabs: state.tabs
+        activeTab: action.activeTab,
+      };
+    }
+
+    return state;
+  }
+```
+]
+
+--
+.smallest[
+```javascript
+  function reducer(state, action) {
+    if (
+      action.type === 'SET_ACTIVE_TAB'
+      && action.activeTab !== state.activeTab
+    ) {
+      return {
+        ...state, // tabs: state.tabs
+        activeTab: action.activeTab,
+      };
+    }
+
+    return state;
+  }
+```
+]
+
+---
+
+# React avec Redux, en pratique
+## 2.3 `Actions`
+
+Le `dispatch` d'une `action` Redux est _lourd_ de conséquences.
+--
+- Exécutions des `middlewares` Redux.
+- Exécutions des `reducers` Redux.
+- Exécutions des `connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])`.
+- Re-rendus et cycle de vie éventuels des composants _connectés_ ainsi que leurs enfants.
+
+---
+# React avec Redux, en pratique
+## 2.3 `Actions`
+
+Attention aux `dispatch` d'`actions` _successifs_, en particulier dans les *actions de plus haut niveau*.
+
+.smaller[
+```javascript
+const setGlobalLoadingState = (loading) => (dispatch) => {
+  dispatch(setSearchBarLoadingState(loading));
+  dispatch(setContentLoadingState(loading));
+}
+
+const doSomethingImpactful = () => async (dispatch) => {
+  dispatch(setGlobalLoadingState(true));
+  let response;
+  try {
+    response = await fetchImportantData();
+    dispatch(processImportantData(response.data));
+  } finally {
+    dispatch(setGlobalLoadingState(false));
+    return response;
+  }
+}
+```
+]
+---
+# React avec Redux, en pratique
+## 2.3 `Actions`
+
+Solutions envisageables:
+- Créer une nouvelle _action_ qui agira sur de multiples _reducers_.
+- Utiliser une librairie qui vous permettra de _gommer_ l'impact de tels patterns (telle que `redux-act`).
+
+--
+
+.smaller[
+```javascript
+import { disbatch } from 'redux-act';
+
+const setGlobalLoadingState = (loading) => (dispatch) => {
+  disbatch(
+    dispatch,
+    [setSearchBarLoadingState(loading), setContentLoadingState(loading)]
+  );
+}
+```
+]
 
 ---
 
@@ -571,6 +1002,174 @@ La présentation est disponible en ligne à l'adresse
 .smaller[https://julienw.github.io/presentation-react-perf-gandi-2018/index.html]
 
 *Des questions ?*
+
+---
+# Annexe
+
+---
+# Qu'est-ce que Redux?
+--
+- Un unique conteneur d'*etat* pour une application
+--
+- Une unique *source de verite*
+--
+- L'assurance d'un etat *predictible*
+--
+- Fonctionne de la meme maniere dans *differents environnements*
+--
+- Une *testabilite* accrue
+--
+- Une *experience de developpement* efficace
+
+---
+# Redux, en pratique
+## Les mots-clef
+--
+1. `State`: Un objet qui reflete l'etat de notre application
+--
+2. `Store`: Le conteneur du `state`
+--
+3. `Action`: Un objet simple qui decrit une modification du `state` a partir d'un `type` et d'une `payload` (optionnelle).
+--
+4. `Action creator`: Une fonction qui retourne une `action`.
+--
+5. `Selector`: Une fonction qui prend `(state, [props])` en arguments et retourne une donnee du `state`
+--
+6. `Reducer`: Une fonction qui prend `(state, action)` en arguments et retourne un *nouveau* `state`
+
+# Redux, OK
+## qu'est ce qui change ?
+--
+.smaller[
+1. On n'eparpille plus l'etat de l'application, on le *centralise*
+2. Les changements d'etats se font au moyen d'objets simples qui *decrivent le changement*
+3. Un changement d'etat est reflete par une fonction *pure* et non une succession d'effets de bord
+4. La recuperation de l'etat a un *instant t* s'en retrouve grandement facilitee depuis tout composant de l'application
+5. L'expression de l'UI n'importe ou dans l'arbre de composants a partir de l'etat de l'application avec un outil tel que React est *naturel*
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+  ```javascript
+  import { connect } from 'react-redux';
+
+  const setActiveTabActionCreator = (tab) => ({ type: 'SET_ACTIVE_TAB', tab });
+
+  export function Tabs({ activeTabName, tabs, dispatch }) {
+    return (
+      <ul>
+        {tabs.map((tab) => (
+          <li key={`tab-${tab.name}`}>
+            <a onClick={() => { dispatch(setActiveTabActionCreator(tab.name)) }}
+                className={activeTabName === tab.name ? 'is-active' : ''}
+                href={`#${tab.name}`}
+            >
+              {tab.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  const selectActiveTab = state => state.activeTab;
+  const mapStateToProps = (state) => ({ activeTabName: selectActiveTab(state) });
+  export default const ConnectedTabs = connect(mapStateToProps)(Tabs);
+  ```
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smaller[Injecter des *action creators* en `props` avec `connect`]
+.smallest[
+```javascript
+  import { connect, bindActionCreators } from 'react-redux';
+*  import { setActiveTabActionCreator } from './actions';
+
+*  export function Tabs({ activeTabName, tabs, setActiveTab }) {
+    return (
+      <ul>
+        {tabs.map((tab) => (
+          <li key={`tab-${tab.name}`}>
+*            <a onClick={() => { setActiveTab(tab.name) }}
+                className={activeTabName === tab.name ? 'is-active' : ''}
+                href={\`#${tab.name}\`}
+             >
+              {tab.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  
+*  const mapDispatchToProps = ({ setActiveTab: setActiveTabActionCreator });
+*  export default const ConnectedTabs = connect(mapStateToProps, mapDispatchToProps)(Tabs);
+```
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
+
+  ```javascript
+  ...
+  render() {
+    const tabs = [{
+      name: 'developers',
+      label: 'Developers! Developers! Developers!',
+    }];
+
+    return (
+      ...
+      <ConnectedTabs tabs={tabs} />
+    );
+  }
+  ```
+---
+# Performance avec React et Redux
+## quand Redux travaille **avec** vous
+
+- Lorsque vous avez un `state` plat et simple
+- Lorsque vous pouvez deplacer un changement d'etat au plus proche des composants finaux
+- Lorsque vos `selectors` et `mapStateToProps` sont performants, memoizes et appliquent le principe d'immutabilite
+
+---
+# Performance avec React et Redux
+## quand Redux travaille **contre** vous
+
+- Lorsque vous avez un etat profondement nested, avec des structures de donnees complexes
+- Lorsque vous connectez des composants qui sont trop eloignes des composants finaux
+- Lorsque vous dispatchez *trop* d'actions et stockez trop de donnees non utiles a l'UI dans le `state` 
+
+---
+# Performance avec React et Redux
+## .flex-justify-between[.span[les bonnes pratiques] _the good_]
+
+1. `selectors` & `mapStateToProps` performants
+2. Ne pas creer de nouvelles fonctions dans les `mapDispatchToProps`
+3. Ne pas creer de nouveau `state` si le contenu de celui-ci est inchange
+---
+# Performance avec React et Redux
+## .flex-justify-between[.span[les pieges et fausses bonnes idees] _the bad_]
+1. `selectors` & `mapStateToProps` over-memoized
+2. Connecter *trop* de composants.
+3. Utiliser le `state` 
+
+---
+# Performance avec React et Redux
+## .flex-justify-between[.span[les mauvaises pratiques] _the ugly_]
+1. Ne pas respecter le principe d'immutabilite dans `mapStateToProps`
+
+---
+# Performance avec React et Redux
+## .flex-justify-between[.span[dans la vraie vie] _the necessary evil_]
+1. Ne pas respecter le principe d'immutabilite dans `mapStateToProps`
+>>>>>>> Add Redux part.
 
     </textarea>
     <script src="./lib/remark.js"></script>
