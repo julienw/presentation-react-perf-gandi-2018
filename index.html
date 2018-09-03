@@ -122,21 +122,23 @@ avec tous les enfants.
 # Comment React fait le rendu
 ## Premier rendu
 
+.center[
 <div class="mermaid">
 graph TD
   Root --> Component
   Component  --> Content
 </div>
+]
 
 ---
 # Comment React fait le rendu
 ## Updates suivantes
 
-Une update peut être déclenchée par:
-1. un nouvel appel à `ReactDOM.render` avec le même composant
-2. le `state` d'un composant change avec la méthode `setState`. .smallest[C'est aussi ainsi
+Une update peut être déclenchée:
+1. par un nouvel appel à `ReactDOM.render` avec le même composant
+2. lorsque le `state` d'un composant change avec la méthode `setState`. .smallest[C'est aussi ainsi
 que les composants connectés à Redux sont mis à jour.]
-3. les `props` d'un composant changent. Cela est forcément une conséquence des
+3. lorsque les `props` d'un composant changent. Cela est forcément une conséquence des
 deux premiers cas.
 
 ---
@@ -500,6 +502,7 @@ Et *après* avoir corrigé.
 * affiche l'action et *la durée* pour la traiter de bout en bout
 * affiche le `state` avant/après
 * permet aussi un *diff*
+* le state ne peut pas être GC: ne pas l'activer en production
 
 ---
 # redux-devtools
@@ -554,6 +557,8 @@ class: center, middle
 ---
 # TLDR
 
+* comprendre ce qui se passe sous le capot permet de définir les règles... et
+de s'en affranchir
 * PureComponents et immutabilité
 * mémoiser partout, mais avec discernement
 * mesurer avant et après les changements
@@ -565,6 +570,7 @@ class: center, middle
 La présentation est disponible en ligne à l'adresse
 .smaller[https://julienw.github.io/presentation-react-perf-gandi-2018/index.html]
 
+*Des questions ?*
 
     </textarea>
     <script src="./lib/remark.js"></script>
