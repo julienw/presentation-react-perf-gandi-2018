@@ -60,7 +60,7 @@ class: center, middle
 ---
 # Un composant React simple
 
-Une classe qui étend `Component`, avec une fonction `render` qui retourne un JSX:
+Une classe qui étend `Component`, avec une méthode `render` qui retourne un JSX:
 
 ```javascript
 class Application extends React.Component {
@@ -537,20 +537,20 @@ class: center, middle
 .smallest[
 ```javascript
   class App extends React.PureComponent {
-    tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }];
-    state = { activeTab: 'businesses' };
+     tabs = [{ name: 'individuals' }, { name: 'businesses' }, { name: 'developers' }];
+     state = { activeTab: 'businesses' };
 *    setActiveTab = (newActiveTab) => { this.setState({ activeTab: newActiveTab }); }
 
-    render() {
-      return (
+     render() {
+       return (
 *        <Tabs setActiveTab={this.setActiveTab}
 *              activeTab={this.state.activeTab}
                tabs={this.tabs}
-        />
+         />
 *        <Content activeTab={this.state.activeTab} />
          <Footer />
-      );
-    }
+       );
+     }
   }
 ```
 ]
@@ -572,7 +572,7 @@ class: center, middle
 import { connect } from 'react-redux';
 ```
 
-Nous permet d'introduire la notion de composants _connectes_ (ou _Container_) par opposition aux composants _de présentation_.
+Nous permet d'introduire la notion de composants _connectés_ (ou _Container_) par opposition aux composants _de présentation_.
 
 .smallest[Note: Vous connaissez probablement cette notion via l'ancienne nomenclature:
 
@@ -987,7 +987,7 @@ class: center, middle
 # Si vous avez raté le début...
 
 ---
-# TLDR
+# TL*;*DR
 
 * comprendre ce qui se passe sous le capot permet de définir les règles... et
 de s'en affranchir
