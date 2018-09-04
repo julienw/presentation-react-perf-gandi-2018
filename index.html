@@ -874,10 +874,11 @@ const setGlobalLoadingState = (loading) => (dispatch) => {
 }
 
 const doSomethingImpactful = () => async (dispatch) => {
+  const fetchPromise = fetchImportantData();
   dispatch(setGlobalLoadingState(true));
   let response;
   try {
-    response = await fetchImportantData();
+    response = await fetchPromise;
     dispatch(processImportantData(response.data));
   } finally {
     dispatch(setGlobalLoadingState(false));
