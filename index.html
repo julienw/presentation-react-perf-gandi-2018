@@ -475,14 +475,14 @@ render() {
 ---
 class: center, middle
 
-# Et Redux dans tout ca ?
+# Et Redux dans tout ça ?
 --
 ## et puis d'abord, _pourquoi_ Redux?
 ---
 # .smaller[La gestion de l'etat d'une application]
 ### Avant React:
 --
-.smaller[L'etat est dissemine entre le DOM, des variables globales, Local Storage, etc...]
+.smaller[L'état est disséminé entre le DOM, des variables globales, Local Storage, etc...]
 
 .smaller[
 ```javascript
@@ -496,10 +496,10 @@ class: center, middle
 ```
 ]
 ---
-# .smaller[La gestion de l'etat d'une application]
+# .smaller[La gestion de l'état d'une application]
 ### Avec React:
 
-.smaller[L'etat est difficile a propager a d'autres composants.]
+.smaller[L'état est difficile a propager à d'autres composants.]
 .smallest[
 ```javascript
   class Tabs extends React.PureComponent {
@@ -530,7 +530,7 @@ class: center, middle
 ```
 ]
 ---
-# .smaller[La gestion de l'etat d'une application]
+# .smaller[La gestion de l'état d'une application]
 ### Avec React:
 
 .smaller[_“Lift the state UP”_ pattern to the rescue?]
@@ -555,15 +555,15 @@ class: center, middle
 ```
 ]
 
-.smaller[Mais cela n'est pas sans consequences! Outre le _"props drilling"_, ce pattern amene forcement a des re-rendus non souhaites, depuis un point haut de l'arbre.]
+.smaller[Mais cela n'est pas sans conséquences! Outre le _"props drilling"_, ce pattern amène potentiellement a des re-rendus non souhaites, depuis un point haut de l'arbre.]
 ---
-# .smaller[La gestion de l'etat d'une application]
+# .smaller[La gestion de l'état d'une application]
 ### Avec Redux:
-  - Nous permet d'eviter de causer des re-rendus _(setState)_ plus haut dans l'arbre que necessaire.
-  - Nous permet d'eviter d'avoir a passer un grand nombre de props tout au long de l'arbre _(props drilling)_.
-  - Nous permet d'etablir une unique source de verite, accessible depuis tout point de l'application.
+  - Nous permet d'éviter de causer des re-rendus _(setState)_ plus haut dans l'arbre que necessaire.
+  - Nous permet d'éviter d'avoir à passer un grand nombre de props tout au long de l'arbre _(props drilling)_.
+  - Nous permet d'établir une unique source de vérité, accessible depuis tout point de l'application.
 
-.smaller[Et nous allons voir tres bientot comment mettre tout cela en oeuvre.]
+.smaller[Et nous allons voir très bientot comment mettre tout cela en oeuvre.]
 ---
 # React avec Redux, en pratique
 ## 1. react-redux `connect`
@@ -572,7 +572,7 @@ class: center, middle
 import { connect } from 'react-redux';
 ```
 
-Nous permet d'introduire la notion de composants _connectes_ (ou _Container_) par opposition aux composants _de presentation_.
+Nous permet d'introduire la notion de composants _connectes_ (ou _Container_) par opposition aux composants _de présentation_.
 
 .smallest[Note: Vous connaissez probablement cette notion via l'ancienne nomenclature:
 
@@ -605,7 +605,7 @@ connect([mapStateToProps], [mapDispatchToProps])(Component);
 
 .smallest[
 Notes:
-- [La documentation de `connect`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) fait _~20 000_ caracteres et chaque mot y est important.
+- [La documentation de `connect`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) fait _~20 000_ caractères et chaque mot y est important.
 - On pourrait faire un talk de ~30minutes pour _chacun de ses arguments_.
 ]
 
@@ -619,7 +619,7 @@ connect(mapStateToProps)(Component);
 ```
 ]
 
-Si `mapStateToProps(state, [ownProps])` est defini, le nouveau composant souscrira aux mises a jour du store Redux.
+Si `mapStateToProps(state, [ownProps])` est défini, le nouveau composant souscrira aux mises à jour du store Redux.
 
 Autrement dit, cette fonction sera appelée apres *toute modification* faite au `state`.
 
@@ -637,15 +637,15 @@ connect(mapStateToProps)(Component);
 ```
 ]
 
-Si votre fonction `mapStateToProps(state, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appelée a chaque fois que ces props changent!
+Si votre fonction `mapStateToProps(state, ownProps)` utilise le second argument `ownProps`, alors cette fonction sera *aussi* appelée à chaque fois que ces props changent!
 
 .smallest[
-Note: Ce changement de `ownProps` est determine par un test `shallow-equality`.
+Note: Ce changement de `ownProps` est determiné par un test `shallow-equality`.
 ]
 
-.smaller[Il est donc _doublement crucial_ que cette fonction soit performante, et de n'utiliser l'argument `ownProps` uniquement lorsque *necessaire*.]
+.smaller[Il est donc _doublement crucial_ que cette fonction soit performante, et de n'utiliser l'argument `ownProps` uniquement lorsque *nécessaire*.]
 
-.smaller[Attention donc a l'utilisation de cet argument pour des transformations de proprietes.]
+.smaller[Attention donc à l'utilisation de cet argument pour des transformations de propriétés.]
 ---
 # React avec Redux, en pratique
 ## 1. react-redux `connect`
@@ -667,7 +667,7 @@ Note: Si vous utilisez cette syntaxe, il y a de grandes chances pour que vous re
 ]
 
 .smallest[
-Note: Ce changement de `ownProps` est determine par un test `shallow-equality`, de la meme manière que pour `mapStateToProps`.
+Note: Ce changement de `ownProps` est déterminé par un test `shallow-equality`, de la meme manière que pour `mapStateToProps`.
 ]
 
 .smallest[
@@ -688,7 +688,7 @@ Ok. Qu'en est-il du _rendu_ de ces composants connectés?
 --
 
 Par défaut, `connect(...)(MyComponent)` effectuera un `render` _si et seulement si_ les nouvelles `mergedProps`
-(résultat de la fusion de `ownProps`, `stateProps` et `dispatchProps`) ne sont pas `shallow-equal` a leur version précédente.
+(résultat de la fusion de `ownProps`, `stateProps` et `dispatchProps`) ne sont pas `shallow-equal` à leur version précédente.
 
 .smaller[
 Note: Pour en savoir plus sur les comportements autres que celui par défaut, voir la documentation des arguments `mergeProps` et `options`.
@@ -729,7 +729,7 @@ Note: Pour en savoir plus sur les comportements autres que celui par défaut, vo
 
 --
 
-Autant que possible, retourner la meme valeur en evitant de la recalculer a chaque fois.
+Autant que possible, retourner la même valeur en évitant de la recalculer à chaque fois.
 C'est ce qu'on appelle la _memoization_.
 
 ---
@@ -864,7 +864,7 @@ Le `dispatch` d'une `action` Redux est _lourd_ de conséquences.
 # React avec Redux, en pratique
 ## 2.3 `Actions`
 
-Attention aux `dispatch` d'`actions` _successifs_, en particulier dans les *actions de plus haut niveau*.
+Attention aux `dispatch` d'`actions` _succéssifs_, en particulier dans les *actions de plus haut niveau*.
 
 .smaller[
 ```javascript
@@ -1169,7 +1169,6 @@ Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
 # Performance avec React et Redux
 ## .flex-justify-between[.span[dans la vraie vie] _the necessary evil_]
 1. Ne pas respecter le principe d'immutabilite dans `mapStateToProps`
->>>>>>> Add Redux part.
 
     </textarea>
     <script src="./lib/remark.js"></script>
