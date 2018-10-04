@@ -1,0 +1,24 @@
+- trop d'updates
+  - trop de données dans le `state` React
+  - `setState` en réponse a des évenements (`onmousewheel`, `onresize`, `onscroll`, etc...) 
+- render/cycle de vie trop couteux
+  - longues listes d'éléments
+  - `setState` en "boucle" avec `componentWillReceiveProps` / `componentDidUpdate`
+  - mauvaise utilisation des APIs de cycle de vie (LocalStorage, constructor, I18N etc...)
+- arbre VDOM a mettre a jour
+  - changement de props "trop haut" dans l'arbre
+  - ne pas utiliser de `shouldComponentUpdate`
+  - ne pas utiliser `key` 
+- React & Immutabilité
+  - pas obligatoire en soi, React n'impose pas l'Immutabilité
+  - mutabilité ~incompatible avec les outils et techniques de performance avec React
+- Redux
+  - populaire pour la maintenabilité
+- sélecteurs
+  - éviter la duplication dans le state Redux
+  - gérer plus éfficacement l'ordre des élements
+  - utiliser selector(state, 'filter')
+- Listes et composants connectés:
+  - List.js > selectItemIds(state) > render() => `itemIds.map(id => <Item key={id} id={id})`
+  - Item.js > selectItem(state, id)
+  - /!\ Memoization de `selectItem`
